@@ -71,6 +71,7 @@ public class MainForm extends javax.swing.JFrame {
             bf.close();
         } catch (IOException e) {
         }
+        this.setTitle(filePath + " Not Defteri");
     }
 
     private void FarkliKaydet() {
