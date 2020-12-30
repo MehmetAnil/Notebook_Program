@@ -18,7 +18,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.UIManager;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
@@ -28,6 +28,8 @@ import javax.swing.text.Highlighter;
  * @author Mehmet Anıl TAYSİ & Emel KAYACI
  */
 public class MainForm extends javax.swing.JFrame {
+    
+       static String filePath = null;
 
     // ANA ÇARPI TUŞU EK PANEL AÇINCA SONRASINDA KAPATMIYOR 
     private void Kaydet() {
@@ -37,17 +39,18 @@ public class MainForm extends javax.swing.JFrame {
             bf.flush();
             bf.close();
         } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
     private void FarkliKaydet() {
         JFileChooser fc = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(".txt files", "txt", "text");
+        fc.setFileFilter(filter);
         int result = fc.showSaveDialog(this);
 
         File selectedFile;
         if (result == JFileChooser.APPROVE_OPTION) {
-            selectedFile = fc.getSelectedFile();
+            selectedFile = new File(fc.getSelectedFile()+".txt");
             System.out.println("File : " + selectedFile.getAbsolutePath());
             filePath = selectedFile.getPath();
         }
@@ -68,25 +71,27 @@ public class MainForm extends javax.swing.JFrame {
                     options,
                     options[2]);
 
-            if (response == JOptionPane.YES_OPTION) {
-                FarkliKaydet();
-                textArea.setText("");
-                if (menuKapat.isEnabled()) {
-                    System.exit(0);
-                }
-            } else if (response == JOptionPane.NO_OPTION) {
-                setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                textArea.setText("");
-                if (menuKapat.isEnabled()) {
-                    System.exit(0);
-                }
-            } else {
-                setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            switch (response) {
+                case JOptionPane.YES_OPTION:
+                    FarkliKaydet();
+                    textArea.setText("");
+                    filePath = "";
+                    if (menuKapat.isEnabled()) {
+                        System.exit(0);
+                    }   break;
+                case JOptionPane.NO_OPTION:
+                    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    textArea.setText("");
+                    filePath = "";
+                    break;
+                default:
+                    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    break;
             }
         }
     }
 
-    static String filePath = null;
+ 
 
     /**
      * Creates new form MainForm
@@ -264,7 +269,7 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_menuFarkliKaydetActionPerformed
 
     private void menuKaydetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuKaydetActionPerformed
-        if (textArea.getText().trim().length() == 0) {
+        if (filePath.equals("")) {
             FarkliKaydet();
         } else {
             Kaydet();
@@ -273,6 +278,8 @@ public class MainForm extends javax.swing.JFrame {
 
     private void menuAcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuAcActionPerformed
         JFileChooser fc = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(".txt files", "txt");
+        fc.setFileFilter(filter);
         int result = fc.showOpenDialog(this);
 
         File selectedFile;
@@ -290,7 +297,6 @@ public class MainForm extends javax.swing.JFrame {
             textArea.setText(s2);
             br.close();
         } catch (Exception ex) {
-            ex.printStackTrace();
         }
     }//GEN-LAST:event_menuAcActionPerformed
 
@@ -302,6 +308,10 @@ public class MainForm extends javax.swing.JFrame {
 
         if (textArea.getText().trim().length() != 0) {
             KaydetMessageBox();
+            
+            if(textArea.getText().trim().length() == 0)
+                System.exit(0);
+            
        } else {
             System.exit(0);
         }
@@ -369,11 +379,8 @@ public class MainForm extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MainForm().setVisible(true);
-            }
-
+        java.awt.EventQueue.invokeLater(() -> {
+            new MainForm().setVisible(true);
         });
     }
 
