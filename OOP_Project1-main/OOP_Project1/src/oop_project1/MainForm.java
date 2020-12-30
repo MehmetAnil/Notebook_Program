@@ -29,7 +29,7 @@ import javax.swing.text.Highlighter;
  */
 public class MainForm extends javax.swing.JFrame {
 
-    static String filePath = null;
+    static String filePath = "";
 
     private void bul(boolean degistir) {
         textArea.getHighlighter().removeAllHighlights();
@@ -340,18 +340,22 @@ public class MainForm extends javax.swing.JFrame {
 
         if (textArea.getText().trim().length() != 0) {
             KaydetMessageBox();
-
             if (textArea.getText().trim().length() == 0) {
                 System.exit(0);
             }
-
         } else {
             System.exit(0);
         }
     }//GEN-LAST:event_menuKapatActionPerformed
 
     private void menuGeriAlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuGeriAlActionPerformed
-        // TODO add your handling code here:
+        try {
+            if (textArea.getText().length() != 0) {
+                textArea.setText(textArea.getText(0, textArea.getText().length() - 1));
+            }
+        } catch (BadLocationException ex) {
+            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_menuGeriAlActionPerformed
 
     private void menuBulActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBulActionPerformed
