@@ -267,7 +267,7 @@ public class MainForm extends javax.swing.JFrame {
         });
         menubar2.add(menuBul);
 
-        menuDegistir.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H, java.awt.event.InputEvent.CTRL_MASK));
+        menuDegistir.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_MASK));
         menuDegistir.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         menuDegistir.setText("Değiştir...");
         menuDegistir.addActionListener(new java.awt.event.ActionListener() {
