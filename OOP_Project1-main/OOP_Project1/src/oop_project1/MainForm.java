@@ -28,10 +28,41 @@ import javax.swing.text.Highlighter;
  * @author Mehmet Anıl TAYSİ & Emel KAYACI
  */
 public class MainForm extends javax.swing.JFrame {
-    
-       static String filePath = null;
 
-    // ANA ÇARPI TUŞU EK PANEL AÇINCA SONRASINDA KAPATMIYOR 
+    static String filePath = null;
+
+    private void bul(boolean degistir) {
+        textArea.getHighlighter().removeAllHighlights();
+        final String arananKelime = JOptionPane.showInputDialog(null, "Kelimeyi Bul:", "Bul", JOptionPane.INFORMATION_MESSAGE);
+        final int l1 = textArea.getText().indexOf(arananKelime);
+        String metin = textArea.getText();
+        Highlighter.HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.cyan);
+        if (l1 == -1) {
+            JOptionPane.showMessageDialog(null, "Aradığınız kelime bulunamadı.", "Uyarı", JOptionPane.ERROR_MESSAGE);
+        } else {
+
+            while (metin.lastIndexOf(arananKelime) >= 0) {
+                int index = metin.lastIndexOf(arananKelime);
+                int end = index + arananKelime.length();
+                try {
+                    textArea.getHighlighter().addHighlight(index, end, painter);
+                    if (metin.lastIndexOf(arananKelime) == 0) {
+                        metin = metin.substring(0, index);
+                    } else {
+                        metin = metin.substring(0, index - 1);
+                    }
+                } catch (BadLocationException ex) {
+                    Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (degistir) {
+                final String yeniKelime = JOptionPane.showInputDialog(null, "Yeni Kelime:", "Değiştir", JOptionPane.INFORMATION_MESSAGE);
+                textArea.setText(textArea.getText().replaceAll(arananKelime, yeniKelime));
+            }
+        }
+
+    }
+
     private void Kaydet() {
         try {
             BufferedWriter bf = new BufferedWriter(new FileWriter(filePath));
@@ -50,7 +81,7 @@ public class MainForm extends javax.swing.JFrame {
 
         File selectedFile;
         if (result == JFileChooser.APPROVE_OPTION) {
-            selectedFile = new File(fc.getSelectedFile()+".txt");
+            selectedFile = new File(fc.getSelectedFile() + ".txt");
             System.out.println("File : " + selectedFile.getAbsolutePath());
             filePath = selectedFile.getPath();
         }
@@ -78,7 +109,8 @@ public class MainForm extends javax.swing.JFrame {
                     filePath = "";
                     if (menuKapat.isEnabled()) {
                         System.exit(0);
-                    }   break;
+                    }
+                    break;
                 case JOptionPane.NO_OPTION:
                     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                     textArea.setText("");
@@ -91,14 +123,13 @@ public class MainForm extends javax.swing.JFrame {
         }
     }
 
- 
-
     /**
      * Creates new form MainForm
      */
     public MainForm() {
         initComponents();
         this.setIconImage(new ImageIcon(getClass().getResource("/Images/notebook.png")).getImage());
+        this.setTitle("Adsız - Not Defteri");
     }
 
     /**
@@ -281,7 +312,6 @@ public class MainForm extends javax.swing.JFrame {
         FileNameExtensionFilter filter = new FileNameExtensionFilter(".txt files", "txt");
         fc.setFileFilter(filter);
         int result = fc.showOpenDialog(this);
-
         File selectedFile;
         if (result == JFileChooser.APPROVE_OPTION) {
             selectedFile = fc.getSelectedFile();
@@ -298,9 +328,11 @@ public class MainForm extends javax.swing.JFrame {
             br.close();
         } catch (Exception ex) {
         }
+        this.setTitle(filePath + " Not Defteri");
     }//GEN-LAST:event_menuAcActionPerformed
 
     private void menuYeniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuYeniActionPerformed
+        this.setTitle("Adsız - Not Defteri");
         KaydetMessageBox();
     }//GEN-LAST:event_menuYeniActionPerformed
 
@@ -308,11 +340,12 @@ public class MainForm extends javax.swing.JFrame {
 
         if (textArea.getText().trim().length() != 0) {
             KaydetMessageBox();
-            
-            if(textArea.getText().trim().length() == 0)
+
+            if (textArea.getText().trim().length() == 0) {
                 System.exit(0);
-            
-       } else {
+            }
+
+        } else {
             System.exit(0);
         }
     }//GEN-LAST:event_menuKapatActionPerformed
@@ -322,33 +355,11 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_menuGeriAlActionPerformed
 
     private void menuBulActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBulActionPerformed
-        textArea.getHighlighter().removeAllHighlights();
-        final String arananKelime = JOptionPane.showInputDialog(null, "Kelimeyi Bul:", "Bul", JOptionPane.INFORMATION_MESSAGE);
-        final int l1 = textArea.getText().indexOf(arananKelime);
-        String metin = textArea.getText();
-        Highlighter.HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.cyan);
-        if (l1 == -1) {
-            JOptionPane.showMessageDialog(null, "Aradığınız kelime bulunamadı.", "Uyarı", JOptionPane.ERROR_MESSAGE);
-        } else {
-            while(metin.lastIndexOf(arananKelime) >= 0) {
-                int index = metin.lastIndexOf(arananKelime);
-                int end = index + arananKelime.length();
-                try {
-                    textArea.getHighlighter().addHighlight(index, end, painter);
-                    if (metin.lastIndexOf(arananKelime) == 0) {
-                        metin = metin.substring(0, index);
-                    } else {
-                        metin = metin.substring(0, index - 1);
-                    } 
-                } catch (BadLocationException ex) {
-                    Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
+        bul(false);
     }//GEN-LAST:event_menuBulActionPerformed
 
     private void menuDegistirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuDegistirActionPerformed
-        // TODO add your handling code here:
+        bul(true);
     }//GEN-LAST:event_menuDegistirActionPerformed
 
     /**
@@ -382,7 +393,9 @@ public class MainForm extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> {
             new MainForm().setVisible(true);
         });
+
     }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar jMenuBar2;
