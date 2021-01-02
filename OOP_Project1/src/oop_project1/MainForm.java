@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -30,6 +32,41 @@ import javax.swing.text.Highlighter;
 public class MainForm extends javax.swing.JFrame {
 
     static String filePath = "";
+
+    private void yanlislariBul( ArrayList<String> yanlisKelimeler) {
+
+        textArea.getHighlighter().removeAllHighlights();
+        String metin = textArea.getText();
+        Highlighter.HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.red);
+
+        for (String yanlisKelime : yanlisKelimeler) {
+            metin = textArea.getText();
+            while (metin.lastIndexOf(yanlisKelime) >= 0) {
+                int index = metin.lastIndexOf(yanlisKelime);
+                int end = index + yanlisKelime.length();
+                try {
+                    if(yanlisKelime.length()!=1)
+                        textArea.getHighlighter().addHighlight(index, end, painter);
+                    if (metin.lastIndexOf(yanlisKelime) == 0) {
+                        metin = metin.substring(0, index);
+                    } else {
+                        metin = metin.substring(0, index - 1);
+                    }
+                } catch (BadLocationException ex) {
+                    Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
+    }
+
+    private void yanlislariDuzelt(Map<String, String> duzeltilen, ArrayList<String> yanlisKelimeler) {
+        for (String yanlisKelime : yanlisKelimeler) {
+            if (duzeltilen.containsKey(yanlisKelime)) {
+                textArea.setText(textArea.getText().replaceAll(yanlisKelime, (String) duzeltilen.get(yanlisKelime)));
+            }
+        }
+    }
 
     private void bul(boolean degistir) {
         textArea.getHighlighter().removeAllHighlights();
@@ -95,7 +132,7 @@ public class MainForm extends javax.swing.JFrame {
                 "Kaydetme",
                 "İptal"};
             int response = JOptionPane.showOptionDialog(jPanel1,
-                    "Değişiklikleri kaydetmek istiyor musunuz?",
+                    "Değişiklikleri Adsız öğesine kaydetmek istiyor musunuz?",
                     "Not Defteri",
                     JOptionPane.YES_NO_CANCEL_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
@@ -159,6 +196,9 @@ public class MainForm extends javax.swing.JFrame {
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
         menuBul = new javax.swing.JMenuItem();
         menuDegistir = new javax.swing.JMenuItem();
+        jSeparator4 = new javax.swing.JPopupMenu.Separator();
+        yanlisDuzelt = new javax.swing.JMenuItem();
+        yanlisBul = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -277,6 +317,25 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         menubar2.add(menuDegistir);
+        menubar2.add(jSeparator4);
+
+        yanlisDuzelt.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        yanlisDuzelt.setText("Yanlış Düzelt");
+        yanlisDuzelt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                yanlisDuzeltActionPerformed(evt);
+            }
+        });
+        menubar2.add(yanlisDuzelt);
+
+        yanlisBul.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        yanlisBul.setText("Yanlış Bul");
+        yanlisBul.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                yanlisBulActionPerformed(evt);
+            }
+        });
+        menubar2.add(yanlisBul);
 
         jMenuBar2.add(menubar2);
 
@@ -367,6 +426,21 @@ public class MainForm extends javax.swing.JFrame {
         bul(true);
     }//GEN-LAST:event_menuDegistirActionPerformed
 
+    private void yanlisDuzeltActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_yanlisDuzeltActionPerformed
+
+        ArrayList<String> sozluk = SingleTransposition.sozluguAktar("words.txt.txt");
+        ArrayList<String> yanlisKelimeler = SingleTransposition.yanlislariBul(textArea.getText(), sozluk);
+        Map<String, String> duzeltilen = SingleTransposition.yanlislariDuzelt(yanlisKelimeler, sozluk);
+        yanlislariBul(yanlisKelimeler);
+        yanlislariDuzelt(duzeltilen, yanlisKelimeler);
+    }//GEN-LAST:event_yanlisDuzeltActionPerformed
+
+    private void yanlisBulActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_yanlisBulActionPerformed
+        ArrayList<String> sozluk = SingleTransposition.sozluguAktar("words.txt.txt");
+        ArrayList<String> yanlisKelimeler = SingleTransposition.yanlislariBul(textArea.getText(), sozluk);
+        yanlislariBul(yanlisKelimeler);
+    }//GEN-LAST:event_yanlisBulActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -409,6 +483,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
+    private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JMenuItem menuAc;
     private javax.swing.JMenuItem menuBul;
     private javax.swing.JMenuItem menuDegistir;
@@ -420,5 +495,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenu menubar1;
     private javax.swing.JMenu menubar2;
     private javax.swing.JTextArea textArea;
+    private javax.swing.JMenuItem yanlisBul;
+    private javax.swing.JMenuItem yanlisDuzelt;
     // End of variables declaration//GEN-END:variables
 }
