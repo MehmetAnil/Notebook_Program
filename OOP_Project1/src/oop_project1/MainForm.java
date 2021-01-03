@@ -36,7 +36,7 @@ public class MainForm extends javax.swing.JFrame {
     private void yanlislariBul( ArrayList<String> yanlisKelimeler) {            //yanlislari bul butonu için yazilan metod. 
 
         textArea.getHighlighter().removeAllHighlights();
-        String metin = textArea.getText();
+        String metin;
         Highlighter.HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.red);
 
         for (String yanlisKelime : yanlisKelimeler) {                           //Test Metodunda görüntleneceği gibi, yanlislari arraylist gezecek buluyoruz.

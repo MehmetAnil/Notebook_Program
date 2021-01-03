@@ -37,10 +37,14 @@ public class SingleTransposition {
         ArrayList<String> yanlisKelimeler = new ArrayList<>();                  //MainFormdaki TextAreaya girilecek metinin yanlis kelimelerini verilen sozluge göre bulmak.
                                                                                 //Formdaki yanlısları bul tusu üzerinden yanlislar tespit edilebilir.
         String[] tokens = metin.split("[^a-zA-Z]+");
-
-        for (String token : tokens) {
-            if (!sozluk.contains(token)) {
-                yanlisKelimeler.add(token.toLowerCase());
+        
+        String tokenCopy;
+        for (String token: tokens) {
+           tokenCopy=token.toLowerCase();                                       //copy lower case oldu ama kelime orijinal haliyle yüklendi.
+            
+            if (!sozluk.contains(tokenCopy)) {
+                yanlisKelimeler.add(token);
+                System.out.println(token + "Yanlis");
             }
         }
         return yanlisKelimeler;
@@ -51,13 +55,16 @@ public class SingleTransposition {
         Map<String, String> duzeltilen = new HashMap<>();                       //SingleTransposition gereğini yerine getiren metod. 
                                                                                 //MainFormda yanlislariDuzelt seceneği üzerinden gerceklestirilebilir.
         for (String kelime : sozluk) {
-
+            
             for (String yanlisKelime : yanlisKelimeler) {
-
+                
+                String yanlisKelimeCopy = yanlisKelime;                         //çok önemli, eğer lowercase olmazsa sözlükten karşılaştıramıyor ve hata görmüyor.
+                
                 if (yanlisKelime.length() == kelime.length()) {
-
+                    yanlisKelimeCopy=yanlisKelimeCopy.toLowerCase();
+                    
                     char[] kelimeKarakter = kelime.toCharArray();
-                    char[] yanlisKelimeKarakter = yanlisKelime.toCharArray();
+                    char[] yanlisKelimeKarakter = yanlisKelimeCopy.toCharArray();
 
                     Arrays.sort(kelimeKarakter);
                     Arrays.sort(yanlisKelimeKarakter);
@@ -75,7 +82,7 @@ public class SingleTransposition {
                     if (comp == 0) {
 
                         kelimeKarakter = kelime.toCharArray();
-                        yanlisKelimeKarakter = yanlisKelime.toCharArray();
+                        yanlisKelimeKarakter = yanlisKelimeCopy.toCharArray();
 
                         for (int i = 0; i < kelimeKarakter.length; i++) {
                             if (kelimeKarakter[i] != yanlisKelimeKarakter[i]) {
