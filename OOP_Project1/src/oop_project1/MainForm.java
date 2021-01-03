@@ -33,19 +33,19 @@ public class MainForm extends javax.swing.JFrame {
 
     static String filePath = "";
 
-    private void yanlislariBul( ArrayList<String> yanlisKelimeler) {
+    private void yanlislariBul( ArrayList<String> yanlisKelimeler) {            //yanlislari bul butonu için yazilan metod. 
 
         textArea.getHighlighter().removeAllHighlights();
         String metin = textArea.getText();
         Highlighter.HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.red);
 
-        for (String yanlisKelime : yanlisKelimeler) {
+        for (String yanlisKelime : yanlisKelimeler) {                           //Test Metodunda görüntleneceği gibi, yanlislari arraylist gezecek buluyoruz.
             metin = textArea.getText();
-            while (metin.lastIndexOf(yanlisKelime) >= 0) {
+            while (metin.lastIndexOf(yanlisKelime) >= 0) {                      
                 int index = metin.lastIndexOf(yanlisKelime);
                 int end = index + yanlisKelime.length();
                 try {
-                    if(yanlisKelime.length()!=1)
+                    if(!(yanlisKelime.length()<=2))        
                         textArea.getHighlighter().addHighlight(index, end, painter);
                     if (metin.lastIndexOf(yanlisKelime) == 0) {
                         metin = metin.substring(0, index);
@@ -60,7 +60,7 @@ public class MainForm extends javax.swing.JFrame {
 
     }
 
-    private void yanlislariDuzelt(Map<String, String> duzeltilen, ArrayList<String> yanlisKelimeler) {
+    private void yanlislariDuzelt(Map<String, String> duzeltilen, ArrayList<String> yanlisKelimeler) { //SinlgeTransposition Sınıfının metodunun cagirimi
         for (String yanlisKelime : yanlisKelimeler) {
             if (duzeltilen.containsKey(yanlisKelime)) {
                 textArea.setText(textArea.getText().replaceAll(yanlisKelime, (String) duzeltilen.get(yanlisKelime)));
@@ -78,7 +78,7 @@ public class MainForm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Aradığınız kelime bulunamadı.", "Uyarı", JOptionPane.ERROR_MESSAGE);
         } else {
 
-            while (metin.lastIndexOf(arananKelime) >= 0) {
+            while (metin.lastIndexOf(arananKelime) >= 0) {                      //Kelimeyi buldugu takdirde mavi highlighter ile gösterimi saglandı
                 int index = metin.lastIndexOf(arananKelime);
                 int end = index + arananKelime.length();
                 try {
@@ -99,8 +99,8 @@ public class MainForm extends javax.swing.JFrame {
         }
 
     }
-
-    private void Kaydet() {
+                                                                                //NotePad uygulamasi referans alinarak, kaydetme ve farkliKyadetme metdolari
+    private void kaydet() {
         try {
             BufferedWriter bf = new BufferedWriter(new FileWriter(filePath));
             bf.write(textArea.getText());
@@ -110,39 +110,39 @@ public class MainForm extends javax.swing.JFrame {
         }
         this.setTitle(filePath + " Not Defteri");
     }
-
-    private void FarkliKaydet() {
+                                                                                //Her iki metod içinde fileChooser metodu kullanildi.
+    private void farkliKaydet() {
         JFileChooser fc = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter(".txt files", "txt", "text");
         fc.setFileFilter(filter);
         int result = fc.showSaveDialog(this);
 
-        File selectedFile;
+        File selectedFile;                                                      
         if (result == JFileChooser.APPROVE_OPTION) {
             selectedFile = new File(fc.getSelectedFile() + ".txt");
             System.out.println("File : " + selectedFile.getAbsolutePath());
             filePath = selectedFile.getPath();
         }
-        Kaydet();
+        kaydet();
     }
 
-    private void KaydetMessageBox() {
+    private void kaydetMessageBox() {                                           
         if (textArea.getText().trim().length() != 0) {
             Object[] options = {"Kaydet",
                 "Kaydetme",
                 "İptal"};
-            int response = JOptionPane.showOptionDialog(jPanel1,
+            int response = JOptionPane.showOptionDialog(jPanel1,                 //kaydet metodlari farkliliklarini betimelyecek messageBox yazimi
                     "Değişiklikleri Adsız öğesine kaydetmek istiyor musunuz?",
                     "Not Defteri",
                     JOptionPane.YES_NO_CANCEL_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
                     null,
                     options,
-                    options[2]);
+                    options[2]);                        
 
-            switch (response) {
+            switch (response) {                                                 //bu switch case yapisindaki response kullanicinin MessageBox'a verdigi yanitlara gore seciliyor.
                 case JOptionPane.YES_OPTION:
-                    FarkliKaydet();
+                    farkliKaydet();
                     textArea.setText("");
                     filePath = "";
                     if (menuKapat.isEnabled()) {
@@ -356,14 +356,14 @@ public class MainForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void menuFarkliKaydetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuFarkliKaydetActionPerformed
-        FarkliKaydet();
+        farkliKaydet();
     }//GEN-LAST:event_menuFarkliKaydetActionPerformed
 
     private void menuKaydetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuKaydetActionPerformed
         if (filePath.equals("")) {
-            FarkliKaydet();
+            farkliKaydet();
         } else {
-            Kaydet();
+            kaydet();
         }
     }//GEN-LAST:event_menuKaydetActionPerformed
 
@@ -393,13 +393,13 @@ public class MainForm extends javax.swing.JFrame {
 
     private void menuYeniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuYeniActionPerformed
         this.setTitle("Adsız - Not Defteri");
-        KaydetMessageBox();
+        kaydetMessageBox();
     }//GEN-LAST:event_menuYeniActionPerformed
 
     private void menuKapatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuKapatActionPerformed
 
         if (textArea.getText().trim().length() != 0) {
-            KaydetMessageBox();
+            kaydetMessageBox();
             if (textArea.getText().trim().length() == 0) {
                 System.exit(0);
             }
@@ -428,7 +428,7 @@ public class MainForm extends javax.swing.JFrame {
 
     private void yanlisDuzeltActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_yanlisDuzeltActionPerformed
 
-        ArrayList<String> sozluk = SingleTransposition.sozluguAktar("words.txt.txt");
+        ArrayList<String> sozluk = SingleTransposition.sozluguAktar("words.txt");
         ArrayList<String> yanlisKelimeler = SingleTransposition.yanlislariBul(textArea.getText(), sozluk);
         Map<String, String> duzeltilen = SingleTransposition.yanlislariDuzelt(yanlisKelimeler, sozluk);
         yanlislariBul(yanlisKelimeler);
@@ -436,7 +436,7 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_yanlisDuzeltActionPerformed
 
     private void yanlisBulActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_yanlisBulActionPerformed
-        ArrayList<String> sozluk = SingleTransposition.sozluguAktar("words.txt.txt");
+        ArrayList<String> sozluk = SingleTransposition.sozluguAktar("words.txt");
         ArrayList<String> yanlisKelimeler = SingleTransposition.yanlislariBul(textArea.getText(), sozluk);
         yanlislariBul(yanlisKelimeler);
     }//GEN-LAST:event_yanlisBulActionPerformed

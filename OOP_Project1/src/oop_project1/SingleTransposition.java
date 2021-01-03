@@ -10,7 +10,8 @@ import java.util.Map;
 
 public class SingleTransposition {
 
-    public static ArrayList<String> sozluguAktar(String dosyaAdi) {
+    public static ArrayList<String> sozluguAktar(String dosyaAdi) {             //sozlugu tekrar tekrar farklı yerlerde cagırmak gerektigi için 
+                                                                                //sozluk cagırma metodu dusunuldu.
         ArrayList<String> sozluk = new ArrayList<>();
         BufferedReader bf = null;
         try {
@@ -33,14 +34,13 @@ public class SingleTransposition {
 
     public static ArrayList<String> yanlislariBul(String metin, ArrayList<String> sozluk) {
 
-        ArrayList<String> yanlisKelimeler = new ArrayList<>();
-
+        ArrayList<String> yanlisKelimeler = new ArrayList<>();                  //MainFormdaki TextAreaya girilecek metinin yanlis kelimelerini verilen sozluge göre bulmak.
+                                                                                //Formdaki yanlısları bul tusu üzerinden yanlislar tespit edilebilir.
         String[] tokens = metin.split("[^a-zA-Z]+");
 
         for (String token : tokens) {
             if (!sozluk.contains(token)) {
-                yanlisKelimeler.add(token);
-                System.out.println(token);
+                yanlisKelimeler.add(token.toLowerCase());
             }
         }
         return yanlisKelimeler;
@@ -48,8 +48,8 @@ public class SingleTransposition {
 
     public static Map<String, String> yanlislariDuzelt(ArrayList<String> yanlisKelimeler, ArrayList<String> sozluk) {
 
-        Map<String, String> duzeltilen = new HashMap<String, String>();
-
+        Map<String, String> duzeltilen = new HashMap<>();                       //SingleTransposition gereğini yerine getiren metod. 
+                                                                                //MainFormda yanlislariDuzelt seceneği üzerinden gerceklestirilebilir.
         for (String kelime : sozluk) {
 
             for (String yanlisKelime : yanlisKelimeler) {
